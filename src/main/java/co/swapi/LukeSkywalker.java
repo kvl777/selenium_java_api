@@ -1,7 +1,9 @@
 package co.swapi;
 
 import models.People;
+import models.Person;
 import models.Planet;
+import models.Swapi;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 
@@ -10,28 +12,20 @@ import static org.junit.Assert.assertTrue;
 public class LukeSkywalker {
 
     @Test
-    public void checkLukeSkywalker() {
+    public void findLukeSkywalker() {
         RestTemplate restTemplate = new RestTemplate();
-        People people = restTemplate.getForObject("https://swapi.co/api/people/1/", People.class);
+        System.out.println("Open the list of peoples");
+        Swapi swapi = restTemplate.getForObject("https://swapi.co/api/", Swapi.class);
 
-        System.out.println("Check if persons name is Luke Skywalker");
-        System.out.print("The name is:" + people.getName());
-        System.out.print("The planet is:" + people.getHomeworld());
-        assertTrue(people.getName().equals("Luke Skywalker"));
-        assertTrue(people.getUrl().equals("https://swapi.co/api/people/1/"));
+        System.out.println("Find first person in the list");
+        People[] people = restTemplate.getForObject(swapi.getPeople(), People[].class);
 
+        System.out.println("Check if first person in the list is Luke Skywalker");
+        Person person = restTemplate.getForObject(people[0].getUrl(), Person.class);
+        System.out.print("The name is:" + person.getName());
+        assertTrue(person.getName().equals("Luke Skywalker"));
     }
 
-    @Test
-    public void checkThePlanet() {
-        RestTemplate restTemplate = new RestTemplate();
-        People people = restTemplate.getForObject("https://swapi.co/api/people/1/", People.class);
-        Planet planet = restTemplate.getForObject(people.getHomeworld(), Planet.class);
 
-        System.out.println("Check if Luke Skywalkers homeworld is Tatooina");
-        System.out.print("The planets name is:" + planet.getName());
-        System.out.print("The population is:" + planet.getPopulation());
-        assertTrue(planet.getName().equals("Tatooine"));
-        assertTrue(planet.getPopulation().equals("200000"));
-    }
+
 }
